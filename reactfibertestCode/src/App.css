@@ -1,0 +1,14 @@
+#root {
+  margin: 0 ;
+  padding: 2rem;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+
+
+#canvas-container {
+  width: 100vw; /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+}
+
