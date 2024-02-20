@@ -40,6 +40,8 @@ type RectanglePoints = [number, number];
     // fill?: string; // not needed due to assignment requirements but could be added
 }
 
+
+
 //while i dont have to fill with color i can define a path to use a fill,
 //uuid is needed for colors to be consistent for each shape
 const GridPattern = ({ id, stroke }: { id: string, stroke: string }) => (
@@ -51,7 +53,7 @@ const GridPattern = ({ id, stroke }: { id: string, stroke: string }) => (
 );
 //to achieve the desire affect i need to skew the shape
 const skewRandom = () => {
-    const min = -15;
+    const min = -5;
     const max = 15;
     return [Math.floor(Math.random() * (max - min + 1)) + min, Math.floor(Math.random() * (max - min + 1)) + min];
 };
@@ -79,18 +81,16 @@ const EmbedPattern = (count: number, pathData: string, stroke: string, centroid:
 
 const EmbedCircle = (count: number, pathData: string, stroke: string, centroid: Point) => {
     const groups = [];
-    for (let i = 0; i < Math.max(count, count - 3); i++) {
-        // Skip iteration with a 50% chance
-        // if (Math.random() > 0.5) continue;
+    for (let i = 0; i < count; i++) {
+        const [skewXValue, skewYValue] = skewRandom(); // Use the updated skewRandom function
         groups.push(
-            <g key={i} transform={`translate(${centroid.x}, ${centroid.y}),scale(${(1 - i * 0.1)}),translate(${-(centroid.x)}, ${-(centroid.y)})`}>
+            <g key={i} transform={`translate(${centroid.x}, ${centroid.y}), scale(${(1 - i * 0.1)}), skewX(${skewXValue}) skewY(${skewYValue}), translate(${-centroid.x}, ${-centroid.y})`}>
                 <path d={pathData} stroke={stroke} fill={'transparent'}/>
             </g>
         );
     }
     return groups;
 };
-
 
 
 //points need to be translated to the center of the shape and then rotated around that center then translated back to maintain location

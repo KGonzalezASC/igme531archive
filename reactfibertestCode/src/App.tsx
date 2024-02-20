@@ -4,8 +4,12 @@ import SvgShape, {SvgShapeProps} from "./components/svgHandler.tsx";
 import React, {useEffect, useState,Suspense} from 'react';
 import {Canvas} from '@react-three/fiber';
 import  {Model} from "./components/Model.tsx";
+import { v4 as uuidv4 } from 'uuid';
 import {OrbitControls, PerspectiveCamera} from '@react-three/drei';
-import SvgGroup from "./components/svgGroupHandler.tsx";
+import { SvgGroup, SvgRandomGroup } from './components/svgGroupHandler.tsx';
+
+
+
 
 // const getRandomPosition = (): [number, number, number] => {
 //     const x = Math.random() * 200 - 100; // Random number between -100 and 100
@@ -17,6 +21,12 @@ import SvgGroup from "./components/svgGroupHandler.tsx";
 const App = () => {
     const [viewBox, setViewBox] = useState(`0 0 ${window.innerWidth} 800`);
     const [url, setUrl] = useState<string | null>(null);
+    const [seed, setSeed] = useState<string>(uuidv4());
+
+    const updateSeed = () => {
+        setSeed(uuidv4());
+    };
+
 
     const downloadSvg = () => {
         const svgElement = document.querySelector("svg");
@@ -38,40 +48,49 @@ const App = () => {
     };
 
 
-    const desOrdres: Array<{ shapeType: SvgShapeProps['shapeType'], points: SvgShapeProps['points'], stroke: string }> = [
-        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
-        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
-        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
-        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+    const noiseGroup :Array<{ shapeType: SvgShapeProps['shapeType'], points: SvgShapeProps['points'], stroke: string }> = [
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
+        { shapeType: 'rectangle', points:[.1,10],stroke:'orange'},
     ];
 
-
-    const desC: Array<{ shapeType: SvgShapeProps['shapeType'], points: SvgShapeProps['points'], stroke: string }> = [
-        { shapeType: 'pathC', points:[40],stroke:'blue'},
-        { shapeType: 'circle', points:[50],stroke:'green'},
-        { shapeType: 'pathC', points:[40],stroke:'pink'},
-        { shapeType: 'pathC', points:[50],stroke:'orange'},
+    const noiseGroupAlt: Array<{ shapeType: SvgShapeProps['shapeType'], points: [number], stroke: string }> = [
+        { shapeType: 'pathC', points: [10], stroke: 'orange'},
+        { shapeType: 'pathC', points: [10], stroke: 'red'},
+        { shapeType: 'pathC', points: [10], stroke: 'green'},
+        { shapeType: 'pathC', points: [10], stroke: 'blue'},
+        { shapeType: 'pathC', points: [10], stroke: 'yellow'},
+        { shapeType: 'pathC', points: [10], stroke: 'pink'},
+        { shapeType: 'pathC', points: [10], stroke: 'cyan'},
+        { shapeType: 'pathC', points: [10], stroke: 'purple'},
+        { shapeType: 'pathC', points: [10], stroke: 'brown'},
+        { shapeType: 'pathC', points: [10], stroke: 'grey'},
+        { shapeType: 'pathC', points: [10], stroke: 'lavender'},
+        { shapeType: 'pathC', points: [10], stroke: 'jade'},
     ];
 
-    const schotter: Array<{ shapeType: SvgShapeProps['shapeType'], points: SvgShapeProps['points'], stroke: string }> = [
-        { shapeType: 'rectangle', points:[50,50],stroke:'red'},
-        { shapeType: 'rectangle', points:[50,50],stroke:'red'},
-        { shapeType: 'rectangle', points:[50,50],stroke:'red'},
-        { shapeType: 'rectangle', points:[50,50],stroke:'red'},
-        { shapeType: 'rectangle', points:[50,50],stroke:'red'},
-        { shapeType: 'rectangle', points:[50,50],stroke:'red'},
-        { shapeType: 'rectangle', points:[50,50],stroke:'red'},
-        { shapeType: 'rectangle', points:[50,50],stroke:'red'},
-
-    ];
-
-    const schotterC: Array<{ shapeType: SvgShapeProps['shapeType'], points: SvgShapeProps['points'], stroke: string }> = [
-        { shapeType: 'pathC', points:[40],stroke:'cyan'},
-        { shapeType: 'pathC', points:[50],stroke:'orange'},
-        { shapeType: 'pathC', points:[40],stroke:'cyan'},
-        { shapeType: 'ellipse', points:['0,0', [80, 40]],stroke:'orange'},
-        { shapeType: 'polygon', points:['0,0', '100,0', '50,100'],stroke:'orange'},
-        { shapeType: 'pathC', points:[40],stroke:'cyan'},
+    const squiggle: Array<{ shapeType: SvgShapeProps['shapeType'], points: SvgShapeProps['points'], stroke: string }> = [
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
+        { shapeType: 'pathSquiggle', points:[50,50],stroke:'red'},
 
     ];
 
@@ -93,208 +112,44 @@ const App = () => {
     return (
         <>
             <div id="canvas-container">
-                <svg viewBox={viewBox} style={{width: '100%', height: "100%"}}>
-                    {/*<SvgShape*/}
-                    {/*    shapeType='line'*/}
-                    {/*    points={['0,0', '100,100']}*/}
-                    {/*    stroke='black'*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='rectangle'*/}
-                    {/*    points={[100, 100]}*/}
-                    {/*    stroke='orange'*/}
-                    {/*    pos={{x: 220, y: 300}}*/}
-                    {/*    rotation={122}*/}
-                    {/*    fillLines={true}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='polygon'*/}
-                    {/*    points={['120,100', '220,150', '220,250', '120,300', '20,250', '20,150']}*/}
-                    {/*    stroke='green'*/}
-                    {/*    pos={{x:0, y: 200}}*/}
-                    {/*    rotation={100}*/}
-                    {/*    fillLines={true}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='polygon'*/}
-                    {/*    points={['0,0', '100,0', '50,100']}*/}
-                    {/*    stroke='blue'*/}
-                    {/*    pos={{x: 100, y: 50}}*/}
-                    {/*    rotation={100}*/}
-                    {/*    fillLines={true}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='circle'*/}
-                    {/*    points={[20]}*/}
-                    {/*    stroke='red'*/}
-                    {/*    pos={{x: 300, y: 100}}*/}
-                    {/*    fillLines={true}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='ellipse'*/}
-                    {/*    points={['0,0', [30, 40]]}*/}
-                    {/*    stroke='purple'*/}
-                    {/*    pos={{x: 130, y:250}}*/}
-                    {/*    fillLines={true}*/}
-                    {/*    rotation={0}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='rectangle'*/}
-                    {/*    points={[100, 100]}*/}
-                    {/*    stroke='red'*/}
-                    {/*    pos={{x: 220, y: 300}}*/}
-                    {/*    rotation={85}*/}
-                    {/*    fillLines={true}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='rectangle'*/}
-                    {/*    points={[100, 100]}*/}
-                    {/*    stroke='orange'*/}
-                    {/*    pos={{x: 265, y: 180}}*/}
-                    {/*    rotation={24}*/}
-                    {/*    fillLines={true}/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='rectangle'*/}
-                    {/*    points={[100, 100]}*/}
-                    {/*    stroke='blue'*/}
-                    {/*    pos={{x: 335, y: 180}}*/}
-                    {/*    rotation={3}*/}
-                    {/*    fillLines={true}/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='rectangle'*/}
-                    {/*    points={[100, 100]}*/}
-                    {/*    stroke='black'*/}
-                    {/*    pos={{x: 265, y: 230}}*/}
-                    {/*    rotation={45}*/}
-                    {/*    fillLines={true}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='rectangle'*/}
-                    {/*    points={[100, 100]}*/}
-                    {/*    stroke='purple'*/}
-                    {/*    pos={{x: 450, y: 325}}*/}
-                    {/*    rotation={80}*/}
-                    {/*    fillLines={true}/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='rectangle'*/}
-                    {/*    points={[100, 100]}*/}
-                    {/*    stroke='purple'*/}
-                    {/*    pos={{x: 400, y: 360}}*/}
-                    {/*    rotation={28}*/}
-                    {/*    fillLines={true}/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='rectangle'*/}
-                    {/*    points={[100, 100]}*/}
-                    {/*    stroke='green'*/}
-                    {/*    pos={{x: 410, y: 245}}*/}
-                    {/*    rotation={12}*/}
-                    {/*    fillLines={true}/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='rectangle'*/}
-                    {/*    points={[100, 100]}*/}
-                    {/*    stroke='blue'*/}
-                    {/*    pos={{x: 460, y: 440}}*/}
-                    {/*    rotation={47}*/}
-                    {/*    fillLines={true}/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='rectangle'*/}
-                    {/*    points={[100, 100]}*/}
-                    {/*    stroke='cyan'*/}
-                    {/*    pos={{x: 515, y: 435}}*/}
-                    {/*    rotation={70}*/}
-                    {/*    fillLines={true}/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='circle'*/}
-                    {/*    //circle should rotate around something other than its center*/}
-                    {/*    points={[20]}*/}
-                    {/*    stroke='red'*/}
-                    {/*    pos={{x: 100, y: 200}} //use these to move the shape*/}
-                    {/*    fillLines={true}*/}
-                    {/*    />*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='polygon'*/}
-                    {/*    points={['50,10','100,20','100,80','50,70']}*/}
-                    {/*    stroke='green'*/}
-                    {/*    pos={{x:220, y: 300}}*/}
-                    {/*    rotation={100}*/}
-                    {/*    fillLines={true}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='polygon'*/}
-                    {/*    points={['50,10','100,20','100,80','50,70']}*/}
-                    {/*    stroke='green'*/}
-                    {/*    pos={{x:220, y: 300}}*/}
-                    {/*    rotation={100}*/}
-                    {/*    fillLines={true}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='polygon'*/}
-                    {/*    points={["60,0", "60,0", "90,70", "0,20"]}*/}
-                    {/*    stroke='yellow'*/}
-                    {/*    pos={{x:250, y: 270}}*/}
-                    {/*    rotation={100}*/}
-                    {/*    fillLines={true}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='polygon'*/}
-                    {/*    points={["50,0", "150,0", "200,50", "0,50"]}*/}
-                    {/*    stroke='orange'*/}
-                    {/*    pos={{x: 410, y: 400}}*/}
-                    {/*    rotation={20}*/}
-                    {/*    fillLines={true}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='polygon'*/}
-                    {/*    points={['0, 0', '100,0', '70, 60', '30,60']}*/}
-                    {/*    stroke='black'*/}
-                    {/*    pos={{x: 0, y: 0}}*/}
-                    {/*    rotation={0}*/}
-                    {/*    fillLines={false}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='ellipse'*/}
-                    {/*    points={['0,0', [80, 40]]}*/}
-                    {/*    stroke='pink'*/}
-                    {/*    pos={{x: 400, y:300}}*/}
-                    {/*    fillLines={true}*/}
-                    {/*    rotation={-60}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='ellipse'*/}
-                    {/*    //ellipse should rotate in place*/}
-                    {/*    points={['0,0', [30, 40]]}*/}
-                    {/*    stroke='red'*/}
-                    {/*    pos={{x: 450, y:350}}*/}
-                    {/*    fillLines={true}*/}
-                    {/*    rotation={0}*/}
-                    {/*/>*/}
-                    {/*<SvgShape*/}
-                    {/*    shapeType='line'*/}
-                    {/*    points={['100,300', '400,300']}*/}
-                    {/*    stroke='red'*/}
-                    {/*/>*/}
-                    {/*width spacing could be better but fine for now*/}
-                    <g transform={`translate(${0}, ${-250})`}>
-                        <SvgGroup shapes={desOrdres} width={600} count={11} smidgeTilt={true} rowSpacing={70}/>
-                    </g>
-                    <g transform={`translate(${0}, ${30})`}>
-                        <SvgGroup shapes={desC} width={700} count={10} smidgeTilt={true} rowSpacing={70}/>
-                    </g>
-                    <g transform={`translate(${0}, ${330})`}>
-                        <SvgGroup shapes={schotter} width={500} count={10} smidgeTilt={true} rowSpacing={42} randomOverlap/>
-                    </g>
-                 {/*   <g transform={`translate(${0}, ${340})`}>
-                        <SvgGroup shapes={schotterC} width={500} count={10} smidgeTilt={true} rowSpacing={70} randomOverlap/>
-                    </g>*/}
+                <svg viewBox={viewBox} style={{width: '100vw', height: "100%"}}>
+                {/*    <SvgRandomGroup
+                        shapes={squiggle}
+                        width={600}
+                        count={12}
+                        smidgeTilt={true}
+                        rowSpacing={68}
+                        randomOverlap={true}
+                        seed={seed}
+                    />*/}
+        {/*           <SvgRandomGroup
+                        shapes={noiseGroupAlt}
+                        width={600}
+                        count={22}
+                        smidgeTilt={true}
+                        rowSpacing={38}
+                        randomOverlap={true}
+                        seed={seed}
+                    />*/}
+                   <SvgRandomGroup
+                        shapes={noiseGroup}
+                        width={600}
+                        count={40}
+                        smidgeTilt={true}
+                        rowSpacing={50}
+                        randomOverlap={true}
+                        seed={seed}
+                    />
                 </svg>
             </div>
+            <button onClick={updateSeed}>Regenerate Seed</button>
             <button onClick={downloadSvg}>Download SVG</button>
             <Suspense>
                 {url ? (
                     <Canvas style={{width: '100vw', height: '600px'}}>
                         <ambientLight/>
                         <Model/>
-                        <OrbitControls />
+                        <OrbitControls/>
                         <PerspectiveCamera
                             makeDefault
                             position={[125, 150, 10]}

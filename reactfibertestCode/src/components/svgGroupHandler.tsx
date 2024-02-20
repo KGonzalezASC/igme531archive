@@ -1,7 +1,10 @@
-import React from "react";
+import React, {memo, useMemo} from "react";
 import {SvgShapeProps} from  "./svgHandler.tsx";
 import SvgShape from "./svgHandler.tsx";
+import { createNoise2D } from 'simplex-noise';
+import alea from 'alea';
 
+// Create a seeded PRNG function
 
 type SvgGroupProps = {
     shapes: SvgShapeProps[],
@@ -10,6 +13,8 @@ type SvgGroupProps = {
     smidgeTilt?: boolean,
     rowSpacing?: number,
     randomOverlap?: boolean,
+    seed?: string; // re-render on slider change
+
 };
 
 const getRandomRotation = (impact = 1) => Math.floor(Math.random() * (15 + impact));
@@ -17,7 +22,7 @@ const getRandomWidth= (impact = 1) => Math.floor(Math.random() *(40+impact));
 
 
 
-const SvgGroup: React.FC<SvgGroupProps> = ({ shapes, width, count, smidgeTilt, rowSpacing = 0, randomOverlap = false }) => {
+export const SvgGroup: React.FC<SvgGroupProps> = ({ shapes, width, count, smidgeTilt, rowSpacing = 0, randomOverlap = false }) => {
     const shapeWidth = width / count;
     const midPoint = Math.ceil(shapes.length / 2.5); // eyeball it lol
     return (
@@ -42,4 +47,59 @@ const SvgGroup: React.FC<SvgGroupProps> = ({ shapes, width, count, smidgeTilt, r
     );
 };
 
-export default SvgGroup;
+export const SvgRandomGroup: React.FC<SvgGroupProps> = memo(({
+                                                                 shapes,
+                                                                 width,
+                                                                 count,
+                                                                 smidgeTilt = false,
+                                                                 rowSpacing = 0,
+                                                                 randomOverlap = false,
+                                                                 seed
+                                                             }) => {
+    const shapeWidth = width / count;
+
+    //move seed code into component
+    const noise2D = useMemo(() => {
+        const prng = alea(seed);
+        return createNoise2D(prng);
+    }, [seed]);
+    //clouds are 4d noise
+
+
+    return (
+        <>
+            {shapes.map((shapeProps, shapeIndex) => (
+                <g key={shapeIndex}>
+                    {Array.from({ length: count }).map((_, index) => {
+                        if (Math.random() < 0.3) { // Adjust this threshold as needed
+                            return null; // Skip rendering this shape with a certain probability
+                        }
+                        return Array.from({ length: 3 }).map((__, overlapIndex) => {
+                            const baseNoise = noise2D(index + shapeIndex, overlapIndex);
+                            const noiseOffsetX = randomOverlap ? baseNoise * 30 : 0;
+                            const noiseOffsetY = randomOverlap ? baseNoise * 30 : 0;
+                            const positionX = index * shapeWidth + noiseOffsetX + (overlapIndex * .12); // Adjust for clustering
+                            const positionY = shapeIndex * rowSpacing + (overlapIndex * 5) + noiseOffsetY;
+                            const baseRotation = smidgeTilt ? noise2D(index, shapeIndex) * 360 : 0;
+                            const rotationAdjustment = [-45, 45, 108]; // Adjust these values as needed to create the desired "<" shape
+                            const rotation = baseRotation + rotationAdjustment[overlapIndex];
+
+                            return (
+                                <SvgShape
+                                    key={`${index}-${overlapIndex}`}
+                                    {...shapeProps}
+                                    pos={{ x: positionX, y: positionY }}
+                                    rotation={rotation}
+                                    fillLines
+                                />
+                            );
+                        });
+                    })}
+                </g>
+            ))}
+        </>
+    );
+});
+
+
+
