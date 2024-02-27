@@ -1,8 +1,10 @@
-import React, {memo, useMemo} from "react";
+import React, {memo, useEffect, useMemo, useState} from "react";
 import {SvgShapeProps} from  "./svgHandler.tsx";
 import SvgShape from "./svgHandler.tsx";
+import {SvgTruchetTile} from "./svgTileHandler.tsx";
 import { createNoise2D } from 'simplex-noise';
 import alea from 'alea';
+import {v4 as uuidv4} from "uuid";
 
 // Create a seeded PRNG function
 
@@ -101,5 +103,56 @@ export const SvgRandomGroup: React.FC<SvgGroupProps> = memo(({
     );
 });
 
+
+
+interface TruchetPatternProps {
+    rows: number;
+    cols: number;
+    tileSize: number;
+    seed: string;
+
+}
+
+export const TruchetPattern: React.FC<TruchetPatternProps> = ({ rows, cols, tileSize, seed }) => {
+    const [baseNoise, setBaseNoise] = useState(0);
+    // Function to determine the rotation index based on row and column indices
+    const getRotationIndex = (row: number, col: number): number => {
+        // Alternate rotations based on the sum of row, column, and shape indices
+        return (row + col) %  5;
+    };
+
+
+    useEffect(() => {
+        const prng = alea(seed);
+        const noise2D = createNoise2D(prng);
+
+        const interval = setInterval(() => {
+            // Update baseNoise with a new value from the noise function
+            const newNoiseValue = noise2D(Math.sin(Date.now()*.001), Math.sin(Date.now()*.001));
+            setBaseNoise(newNoiseValue);
+        },  500); // Adjust the interval as needed
+
+        return () => clearInterval(interval);
+    }, [seed]);
+
+    return (
+        <>
+            {Array.from({ length: rows}).map((_, row) => (
+                Array.from({ length: cols }).map((_, col) => {
+                    return (
+                        <SvgTruchetTile
+                            key={`${row}-${col}`}
+                            shapeProps={{ stroke: '#000000' }}
+                            pos={{ x: col * tileSize, y: row * tileSize }}
+                            baseNoise={baseNoise}
+                            rotationIndex={getRotationIndex(row, col)}
+                            opacity={.1}
+                        />
+                    );
+                })
+            ))}
+        </>
+    );
+};
 
 

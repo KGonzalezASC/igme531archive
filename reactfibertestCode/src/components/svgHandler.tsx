@@ -31,7 +31,7 @@ type RectanglePoints = [number, number];
 
 //handles input formatting for shapes
  interface SvgShapeProps {
-    shapeType: 'line' | 'polygon' | 'rectangle'| 'circle' | 'ellipse'| 'pathSquiggle'|'pathC'| 'pathE';
+    shapeType: 'line' | 'polygon' | 'rectangle'| 'circle' | 'ellipse'| 'pathSquiggle'|'pathC';
     points: string[] | RectanglePoints| [number]| [string,[number,number]]; //force input params on same field
     stroke: string;
     pos?: { x: number, y: number }; // position of the shape
@@ -39,7 +39,6 @@ type RectanglePoints = [number, number];
     fillLines?: boolean;
     // fill?: string; // not needed due to assignment requirements but could be added
 }
-
 
 
 //while i dont have to fill with color i can define a path to use a fill,
@@ -51,6 +50,10 @@ const GridPattern = ({ id, stroke }: { id: string, stroke: string }) => (
         </pattern>
     </defs>
 );
+
+
+
+
 //to achieve the desire affect i need to skew the shape
 const skewRandom = () => {
     const min = -5;
@@ -216,8 +219,6 @@ const SvgShape: React.FC<SvgShapeProps> = ({ shapeType, points, stroke, pos = { 
                     </g>
                 );
                 break;
-
-
         default:
             return null;
     }
